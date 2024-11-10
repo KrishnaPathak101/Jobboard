@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Job from '@/models/Job';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-    try {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
       // Connect to the database
       await connectToDatabase();
   
-      const { id } = params;
+      const { id } = params as { id: string };
   
       // Validate if ID is present
       if (!id) {

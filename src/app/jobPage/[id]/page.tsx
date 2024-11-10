@@ -12,26 +12,30 @@ interface JobData {
   benefits?: string[];
 }
 
-const JobDetailPage = ({ params: paramsPromise }: { params: Promise<{ id: string }> }) => {
-  const [job, setJob] = useState<JobData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+interface JobDetailPageProps {
+  params: { id: string };
+}
+
+const JobDetailPage: React.FC<JobDetailPageProps> = ({ params }) => {
+  const [job, setJob] = useState<JobData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { id } = await paramsPromise;
+        const { id } = params;
         if (!id) throw new Error("Job ID is undefined");
 
         setLoading(true);
 
         const res = await fetch(`/api/jobs/${id}`);
-        if (!res.ok) throw new Error(`Error: ${res.status}`);
+        if (!res.ok) throw new Error(`Error: ${res.status} ${res.statusText}`);
 
         const data = await res.json();
         setJob(data);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error("Fetch Error:", err);
         setError('An error occurred while fetching job data');
       } finally {
         setLoading(false);
@@ -39,11 +43,11 @@ const JobDetailPage = ({ params: paramsPromise }: { params: Promise<{ id: string
     };
 
     fetchData();
-  }, [paramsPromise]);
+  }, [params]);
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>{error}</div>
-  if (!job) return <div>Job not found</div>
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!job) return <div>Job not found</div>;
 
   return (
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: 'auto' }}>
@@ -63,7 +67,7 @@ const JobDetailPage = ({ params: paramsPromise }: { params: Promise<{ id: string
       </div>
 
       {/* Job Requirements */}
-      {job.requirements && job.requirements.length > 0 && (
+      {job.requirements?.length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <h2>Requirements</h2>
           <ul>
@@ -75,7 +79,7 @@ const JobDetailPage = ({ params: paramsPromise }: { params: Promise<{ id: string
       )}
 
       {/* Job Benefits */}
-      {job.benefits && job.benefits.length > 0 && (
+      {job.benefits?.length > 0 && (
         <div style={{ marginBottom: '20px' }}>
           <h2>Benefits</h2>
           <ul>
@@ -86,7 +90,7 @@ const JobDetailPage = ({ params: paramsPromise }: { params: Promise<{ id: string
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default JobDetailPage
+export default JobDetailPage;
