@@ -1,6 +1,6 @@
 // models/Job.ts
 
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose from 'mongoose';
 
 
 
