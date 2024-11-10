@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Link from "next/link";
+import Header from "./components/Header";
+import Hero from "./components/Hero";
+import Home from "./page";
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,12 +30,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <AuthKitProvider>
+        <main className=" container mx-auto p-4">
+        <Header/>
         {children}
+        </main>
+        </AuthKitProvider>
       </body>
     </html>
+    </ClerkProvider>
   );
 }
