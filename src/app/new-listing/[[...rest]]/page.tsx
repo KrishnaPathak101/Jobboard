@@ -20,21 +20,21 @@ interface UserMembership {
   role: string;
 }
 
-const JobPostPage = () => {
+const JobPostPage: React.FC = () => {
   const { user } = useUser()
   const { isLoaded, userMemberships, createOrganization } = useOrganizationList({
     userMemberships: userMembershipsParams,
   })
 
-  const [organizationName, setOrganizationName] = useState('')
+  const [organizationName, setOrganizationName] = useState<string>('')
   const [selectedOrganization, setSelectedOrganization] = useState<Organization | null>(null)
-  const [showModal, setShowModal] = useState(false)
-  const [jobTitle, setJobTitle] = useState('')
-  const [jobDescription, setJobDescription] = useState('')
-  const [jobLocation, setJobLocation] = useState('')
-  const [jobType, setJobType] = useState('')
-  const [salary, setSalary] = useState('')
-  const [isPostingJob, setIsPostingJob] = useState(false)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [jobTitle, setJobTitle] = useState<string>('')
+  const [jobDescription, setJobDescription] = useState<string>('')
+  const [jobLocation, setJobLocation] = useState<string>('')
+  const [jobType, setJobType] = useState<string>('')
+  const [salary, setSalary] = useState<string>('')
+  const [isPostingJob, setIsPostingJob] = useState<boolean>(false)
   const [locationSuggestions, setLocationSuggestions] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
 
@@ -184,8 +184,8 @@ const JobPostPage = () => {
           }}
           onTypeChange={setJobType}
           onSalaryChange={setSalary}
-          onNameChange={user?.fullName}
-          onEmailChange={user?.emailAddresses?.[0]?.emailAddress}
+          onNameChange={user?.fullName || ''}
+          onEmailChange={user?.emailAddresses?.[0]?.emailAddress || ''}
           onSubmit={handlePostJob}
           isSubmitting={isPostingJob}
         />
@@ -195,7 +195,10 @@ const JobPostPage = () => {
 }
 
 // Organization Table Component
-const OrganizationTable = ({ memberships, onOrganizationClick }) => (
+const OrganizationTable: React.FC<{
+  memberships: UserMembership[];
+  onOrganizationClick: (organization: Organization) => void;
+}> = ({ memberships, onOrganizationClick }) => (
   <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
     <table className="min-w-full bg-white">
       <thead>
@@ -223,7 +226,28 @@ const OrganizationTable = ({ memberships, onOrganizationClick }) => (
 )
 
 // Modal Component for Job Posting
-const JobPostModal = ({
+const JobPostModal: React.FC<{
+  organizationName: string;
+  jobTitle: string;
+  jobDescription: string;
+  jobLocation: string;
+  jobType: string;
+  salary: string;
+  locationSuggestions: string[];
+  onClose: () => void;
+  onTitleChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
+  onLocationChange: (value: string) => void;
+  onTypeChange: (value: string) => void;
+  onSalaryChange: (value: string) => void;
+  onSubmit: () => void;
+  isSubmitting: boolean;
+  error: string | null;
+  posterName: string;
+  posterEmail: string;
+  onNameChange: (value: string) => void;
+  onEmailChange: (value: string) => void;
+}> = ({
   organizationName, jobTitle, jobDescription, jobLocation, jobType, salary,
   locationSuggestions, onClose, onTitleChange, onDescriptionChange, 
   onLocationChange, onTypeChange, onSalaryChange, onSubmit, 
@@ -325,7 +349,11 @@ const JobPostModal = ({
 )
 
 // Form for Creating a New Organization
-const CreateOrganizationForm = ({ organizationName, onNameChange, onCreate }) => (
+const CreateOrganizationForm: React.FC<{
+  organizationName: string;
+  onNameChange: (value: string) => void;
+  onCreate: () => void;
+}> = ({ organizationName, onNameChange, onCreate }) => (
   <div className="mt-6 w-full max-w-md">
     <h2 className="text-lg font-medium text-gray-700 mb-2">Create a New Organization</h2>
     <input
@@ -345,3 +373,4 @@ const CreateOrganizationForm = ({ organizationName, onNameChange, onCreate }) =>
 )
 
 export default JobPostPage
+
